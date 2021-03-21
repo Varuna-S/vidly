@@ -1,0 +1,41 @@
+{
+  "name": "vidly",
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest --watchAll --verbose --detectOpenHandles --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "config": "^3.3.4",
+    "debug": "^4.3.1",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "fawn": "^2.1.5",
+    "helmet": "^4.4.1",
+    "joi": "^17.4.0",
+    "joi-objectid": "^3.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongo": "^0.1.0",
+    "mongoose": "^5.11.18",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7",
+    "pug": "^3.0.2",
+    "underscore": "^1.12.0",
+    "winston": "^3.3.3",
+    "winston-mongodb": "^5.0.7"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "jshint": "^2.12.0",
+    "supertest": "^6.1.3"
+  }
+}
