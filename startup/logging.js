@@ -1,6 +1,7 @@
 require('express-async-errors');  // monkey patcher
 const winston = require('winston');
 require('winston-mongodb');
+const config = require('config');
 
 module.exports = function() {
     winston.configure({
@@ -14,7 +15,7 @@ module.exports = function() {
             }),
             new winston.transports.File({filename:'logfile.log'}),
             new winston.transports.MongoDB({
-                db:'mongodb://localhost:27017/vidly'
+                db: config.get('db')
             }) 
         ],
         exceptionHandlers: [

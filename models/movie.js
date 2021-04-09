@@ -36,11 +36,11 @@ function validateMovie(movie) {
     const schema = Joi.object({
         title: Joi.string().min(1).max(255).required(),
         genreId: Joi.objectId().required(),
-        numberInStock: Joi.number().min(1).max(255).required(),
-        dailyRentalRate: Joi.number().min(1).max(255) .required()
+        numberInStock: Joi.number().min(0).max(255).required(),
+        dailyRentalRate: Joi.number().min(0).max(255) .required()
     });
     return schema.validate(movie)
 }
 
 exports.Movie = Movie;
-exports.validate = validateMovie;
+exports.validateMovie = validateMovie;

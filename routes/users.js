@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 const express = require('express');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
-const {User, validate} = require('../models/user');
+const {User, validateUser} = require('../models/user');
 const auth = require('../middleware/authmiddleware');
+const validate = require('../middleware/validate');
 
 const router = express.Router();
 
@@ -13,10 +14,7 @@ router.get('/me', auth, async (request, response) => {
 });
 
 //POST LOGIN
-router.post('/', async (request, response) =>{
-    const {error} = validate(request.body);
-    if(error)
-        return response.status(400).send(error.details[0].message);
+router.post('/', validate(validateUser), async (request, response) =>{
     let user = await User.findOne({email: request.body.email});
     if(user)
         return response.status(400).send("User already registered with this email");

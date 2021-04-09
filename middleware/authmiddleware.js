@@ -12,7 +12,6 @@ function auth(request, response, next){
     }
     catch(ex)
     {
-        console.log(ex)
         return response.status(400).send('Invalid token')
     }
 }

@@ -37,4 +37,4 @@ function validateCustomer(input) {
 
 
 exports.Customer = Customer;
-exports.validate = validateCustomer;
+exports.validateCustomer = validateCustomer;

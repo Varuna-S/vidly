@@ -1,11 +1,13 @@
-const validateObjectId = require('../middleware/validateObjectId');
 const mongoose = require('mongoose');
 const express = require('express');
 const debug = require('debug');
 const _ = require('lodash');
-const {Genre, validate} = require('../models/genre');
+const {Genre, validateGenre} = require('../models/genre');
 const auth  = require('../middleware/authmiddleware');
 const admin  = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
+const validate = require('../middleware/validate');
+
 const router = new express.Router();
 
 //GET
@@ -24,11 +26,7 @@ router.get('/:id', validateObjectId, async (request,response) => {
 });
 
 //POST
-router.post('/', auth, async (request,response) => {
-    //Input validation
-    const {error} = validate(request.body);
-    if(error)
-        return response.status(400).send(error.details[0].message);
+router.post('/', [auth, validate(validateGenre)], async (request,response) => {
     let genre = new Genre({ name: request.body.name });
     
     await genre.save();
@@ -37,36 +35,21 @@ router.post('/', auth, async (request,response) => {
 });
 
 //PUT
-router.put('/:id', async (request,response) => {
-    const {error} = validate(request.body);
-    if(error)
-        return response.status(400).send(error.details[0].message);
-    try{    
+router.put('/:id', [auth, validateObjectId, validate(validateGenre)], async (request,response) => { 
     let genre = await Genre.findOne({_id: request.params.id});
     if(!genre)
-        return response.status(400).send(`Could not find genre with id: ${request.params.id}`);
+        return response.status(404).send(`Could not find genre with id: ${request.params.id}`);
     genre.name = request.body.name;
     await genre.save();
-    response.send(genre);
-    }
-    catch(ex){
-        console.log(ex);
-    }
+    response.send(genre);   
 });
 
 //DELETE
-router.delete('/:id', [auth, admin], async (request, response) => {
-    try{
+router.delete('/:id', [auth, admin, validateObjectId], async (request, response) => {
     const genre = await Genre.deleteOne({_id: request.params.id});
-    if(!genre)
+    if(!genre || genre.deletedCount === 0)
         return response.status(404).send(`Could not find genre with id: ${request.params.id}`);
     response.send(genre);
-    }
-    catch(ex)
-    {
-            console.log(ex);
-    }
-    
 });
 
 

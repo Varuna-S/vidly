@@ -1,16 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const {Rental, validate} = require('../models/rental');
+const {Rental, validateRentals} = require('../models/rental');
 const {Movie} = require('../models/movie');
 const {Customer} = require('../models/customer');
 const Fawn = require('fawn');
+const auth = require('../middleware/authmiddleware');
+const validate = require('../middleware/validate');
 
 Fawn.init(mongoose);
 const router = express.Router();
 
 //GET
-router.get('/', async (request, response)=>{
+router.get('/', auth, async (request, response)=>{
     const rentals = await Rental
     .find()
     .sort('name');
@@ -18,14 +20,9 @@ router.get('/', async (request, response)=>{
 });
 
 //POST
-router.post('/', async (request, response) =>{
-    const {error} = validate(request.body);
-    if(error) 
-        return response.status(400).send(error.details[0].message);
-
+router.post('/', [auth, validate(validateRentals)], async (request, response) =>{
     let movie = await Movie
-        .findOne({ _id: request.body.movieId})
-        .select('title dailyRentalRate');
+        .findOne({ _id: request.body.movieId});
     if(!movie)
         return response.status(400).send(`Movie with the id: ${request.body.movieId} not found`);
 
@@ -49,8 +46,8 @@ router.post('/', async (request, response) =>{
         },
     });
     
-    new Fawn.Task()
-        .save('rentals',rental)
+    await new Fawn.Task()
+        .save('rentals', rental)
         .update('movies',{ _id: movie._id},{ $inc: { numberInStock: -1 }})
         .run();
     

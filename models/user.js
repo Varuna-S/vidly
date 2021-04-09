@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        minlength: 3,
+        minlength: 6,
         maxlength: 255
     },
     password: {
@@ -39,11 +39,11 @@ function validateUser(user)
 {
     const schema = Joi.object({
         name: Joi.string().min(3).max(50).required(),
-        email: Joi.string().min(3).max(255).required().email(),
+        email: Joi.string().min(6).max(255).required().email(),
         password: Joi.string().min(8).max(255).required(),  //plain text password max characters 255, but hashed password max length is 1024
     });
     return schema.validate(user);
 }
 
 exports.User = User;
-exports.validate = validateUser;
+exports.validateUser = validateUser;

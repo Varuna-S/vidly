@@ -6,7 +6,7 @@ const Mongoose = require('mongoose');
 describe('user.generateAuthToken', () => {
     it('should return a valid json web token for the user', () => {
         const payload = { 
-            _id: new Mongoose.Types.ObjectId().toHexString()    , 
+            _id: new Mongoose.Types.ObjectId().toHexString(), 
             isAdmin: false 
         }
         const user = new User(payload);

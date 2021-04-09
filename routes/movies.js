@@ -1,8 +1,11 @@
 const express = require('express');
 const _ = require('lodash');
 const { Genre } = require('../models/genre');
-const {Movie, validate} = require('../models/movie');
-
+const {Movie, validateMovie} = require('../models/movie');
+const auth  = require('../middleware/authmiddleware');
+const validateObjectId  = require('../middleware/validateObjectId');
+const admin = require('../middleware/admin');
+const validate = require('../middleware/validate');
 
 const router = express.Router();
 
@@ -11,11 +14,11 @@ const router = express.Router();
 router.get('/', async (request, response) =>{
     const movies = await Movie
         .find()
-        .sort({name:1});
+        .sort({title:1});
     response.send(movies);
 });
 
-router.get('/:id',async (request,response) => {
+router.get('/:id', validateObjectId, async (request,response) => {
     const movies = await Movie.findOne({_id: request.params.id});
     if(!movies)
         return response.status(404).send(`Movie could not be found`);
@@ -23,15 +26,11 @@ router.get('/:id',async (request,response) => {
 });
 
 //POST
-router.post('/', async (request, response) => {
-    //Input validation
-    const {error} = validate(request.body);
-    if(error)
-        return response.status(400).send(error.details[0].message);
-
+router.post('/', [auth, validate(validateMovie)], async (request, response) => {
     const genre = await Genre.findOne({ _id: request.body.genreId})
     if(!genre)
-        return response.status(400).send(`Genre was id: ${request.body.genreId} was not found`);
+        return response.status(404).send(`Genre was id: ${request.body.genreId} was not found`);
+
     let movie = new Movie({
         title: request.body.title,
         genre: {
@@ -41,49 +40,29 @@ router.post('/', async (request, response) => {
         numberInStock: request.body.numberInStock,
         dailyRentalRate: request.body.dailyRentalRate
     });
-    try{
-    await movie.save();    
+    await movie.save(); 
+
     response.send(movie);
-    }
-    catch(ex)
-    {
-        console.log(ex);
-    }
 });
 
 //PUT
-router.put('/:id',  async (request,response) => {
-    const {error} = validate(request.body);
-    if(error)
-        return response.status(400).send(error.details[0].message);
-    try{    
+router.put('/:id', [auth, validateObjectId, validate(validateMovie)], async (request,response) => {
     let movie = await Movie.findOne({_id: request.params.id});
     if(!movie)
-        return response.status(400).send(`Could not find genre with id: ${request.params.id}`);
+        return response.status(404).send(`Could not find movie with id: ${request.params.id}`);
     movie.title = request.body.title;
     movie.numberInStock = request.body.numberInStock;
     movie.dailyRentalRate = request.body.dailyRentalRate;
     await movie.save();
     response.send(movie);
-    }
-    catch(ex){
-        console.log(ex);
-    }
 });
 
 //DELETE
-router.delete('/:id', async (request, response) => {
-    try{
+router.delete('/:id', [auth, admin, validateObjectId], async (request, response) => {
     const movie = await Movie.deleteOne({_id: request.params.id});
-    if(!movie)
+    if(!movie || movie.deletedCount === 0)
         return response.status(404).send(`Could not find movie with id: ${request.params.id}`);
     response.send(movie);
-    }
-    catch(ex)
-    {
-            console.log(ex);
-    }
-    
 });
 
 

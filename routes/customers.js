@@ -1,22 +1,23 @@
-const { request, response } = require('express');
-const mongoose = require('mongoose');
 const express = require('express');
 const Joi = require('joi');
-const debug = require('debug');
 const _ = require('lodash');
-const {Customer, validate} = require('../models/customer');
+const {Customer, validateCustomer} = require('../models/customer');
+const auth  = require('../middleware/authmiddleware');
+const admin = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
+const validate = require('../middleware/validate');
 
 const router = new express.Router();
 
 //GET
-router.get('/', async (request, response) =>{
+router.get('/', auth, async (request, response) =>{
     const customers = await Customer
         .find()
         .sort({name:1});
     response.send(customers)
 });
 
-router.get('/:id',async (request,response) => {
+router.get('/:id', [auth, validateObjectId], async (request,response) => {
     const customer = await Customer.findOne({_id: request.params.id});
     if(!customer)
         return response.status(404).send(`Customer could not be found`);
@@ -24,11 +25,7 @@ router.get('/:id',async (request,response) => {
 });
 
 //POST
-router.post('/', async (request,response) => {
-    //Input validation
-    const {error} = validate(request.body);
-    if(error)
-        return response.status(400).send(error.details[0].message);
+router.post('/', [auth, validate(validateCustomer)], async (request,response) => {
     let customer = new Customer(_.pick(request.body, ['name', 'isGold', 'phone']));
     
     await customer.save();
@@ -36,11 +33,7 @@ router.post('/', async (request,response) => {
 });
 
 //PUT
-router.put('/:id',  async (request,response) => {
-    const {error} = validate(request.body);
-    if(error)
-        return response.status(400).send(error.details[0].message);
-        
+router.put('/:id', [auth, validateObjectId, validate(validateCustomer)],  async (request,response) => {
     let customer = await Customer.findOne({_id: request.params.id});
     if(!customer)
         return response.status(404).send(`Could not find customer with id: ${request.params.id}`);
@@ -52,9 +45,9 @@ router.put('/:id',  async (request,response) => {
 });
 
 //DELETE
-router.delete('/:id', async (request, response) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (request, response) => {
     const customer = await Customer.deleteOne({_id: request.params.id});
-    if(!customer)
+    if(!customer || customer.deletedCount === 0)
         return response.status(404).send(`Could not find customer with id: ${request.params.id}`);
     response.send(customer);
     
