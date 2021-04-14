@@ -8,7 +8,7 @@
   "main": "app.js",
   "scripts": {
     "test": "jest --watchAll --verbose --detectOpenHandles --coverage",
-    "start": "node index.js"
+    "start": "node app.js"
   },
   "engines": {
     "node" : "14.15.4"
