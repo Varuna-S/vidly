@@ -12,7 +12,7 @@ describe('/api/rentals', () => {
     let movie;
     let customer;
     beforeEach( async () => {
-        server = require('../../index');
+        server = require('../../app');
         if(process.env.NODE_ENV === 'test')
         {
             await Rental.deleteMany({});

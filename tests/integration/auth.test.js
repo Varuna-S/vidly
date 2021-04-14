@@ -9,7 +9,7 @@ describe('auth', () => {
         let password;
         let salt;
         beforeEach( async () => {
-            server = require('../../index');
+            server = require('../../app');
             salt = await bcrypt.genSalt(10);
             password = 'password1';
             hashedPassword = await bcrypt.hash(password, salt);

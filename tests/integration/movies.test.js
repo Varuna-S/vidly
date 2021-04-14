@@ -10,7 +10,7 @@ describe('/api/movies', () => {
     let genre;
 
     beforeEach(async () => {
-        server = require('../../index');
+        server = require('../../app');
         if(process.env.NODE_ENV === 'test')
             await Movie.deleteMany({});
         token = new User().generateAuthToken();

@@ -5,7 +5,7 @@ describe('/api/users', () => {
     let server;
     let token;
     beforeEach(async () => {
-        server = require('../../index');
+        server = require('../../app');
         if(process.env.NODE_ENV === 'test')
             await User.deleteMany({});
         

@@ -7,7 +7,7 @@ const moment = require('moment');
 
 describe('/api/returns', () => {
     beforeEach( async () => {
-        server = require('../../index');
+        server = require('../../app');
         token = new User().generateAuthToken();
     });
     afterEach(async () => {
