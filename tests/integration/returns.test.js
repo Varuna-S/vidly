@@ -6,6 +6,7 @@ const {Movie} = require('../../models/movie');
 const moment = require('moment');
 
 describe('/api/returns', () => {
+    let server;
     beforeEach( async () => {
         server = require('../../app');
         token = new User().generateAuthToken();
@@ -16,14 +17,12 @@ describe('/api/returns', () => {
         await Movie.deleteMany({});
     });
     describe('POST /', () => {
-        let server;
         let customerId;
         let movieId;
         let rental;
         let token;
         let movie;
         beforeEach( async () => {
-            server = require('../../index');
             token = new User().generateAuthToken();
             customerId = new mongoose.Types.ObjectId();
             movieId = new mongoose.Types.ObjectId();
