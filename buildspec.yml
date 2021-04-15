@@ -4,18 +4,10 @@ phases:
     install:
       commands:
         - echo Installing dependencies
-        - yum update  -y
-        - tee /etc/yum.repos.d/mongo.repo<<EOF
-          [mongodb-org-4.4]
-          name=MongoDB Repository
-          baseurl=https://repo.mongodb.org/yum/amazon/2/mongodb-org/4.4/x86_64/
-          gpgcheck=1
-          enabled=1
-          gpgkey=https://www.mongodb.org/static/pgp/server-4.4.asc
-          EOF
+        - curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+        - yum install -y nodejs
+        - printf "[mongodb-org-4.4] \nname=MongoDB Repository \nbaseurl=https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/4.4/x86_64/ \ngpgcheck=1 \nenabled=1 \ngpgkey=https://www.mongodb.org/static/pgp/server-4.4.asc" >> /etc/yum.repos.d/mongodb-org-4.4.repo
         - yum install -y mongodb-org
-        - yum -y install nodejs
-        - npm install
     pre_build:
       commands:
         - echo Starting mongodb
