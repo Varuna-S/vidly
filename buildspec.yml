@@ -11,7 +11,7 @@ phases:
     pre_build:
       commands:
         - echo Starting mongodb
-        - systemctl start mongod
-        - systemctl enable mongod
+        - sudo -i systemctl start mongod
+        - sudo -i systemctl enable mongod
 
       
