@@ -5,7 +5,7 @@ phases:
       commands:
         - echo Installing dependencies
         - apt update
-        - apt install nodejs npm
+        - apt install nodejs 
         - apt install mongodb
     pre_build:
       commands:
