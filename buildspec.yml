@@ -8,14 +8,10 @@ phases:
         - yum install -y nodejs
         - printf "[mongodb-org-4.4] \nname=MongoDB Repository \nbaseurl=https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/4.4/x86_64/ \ngpgcheck=1 \nenabled=1 \ngpgkey=https://www.mongodb.org/static/pgp/server-4.4.asc" >> /etc/yum.repos.d/mongodb-org-4.4.repo
         - yum install -y mongodb-org
-        - sudo ln -s /usr/local/bin/node /usr/bin/node
-        - sudo ln -s /usr/local/lib/node /usr/lib/node
-        - sudo ln -s /usr/local/bin/npm /usr/bin/npm
-        - sudo ln -s /usr/local/bin/node-waf /usr/bin/node-waf
     pre_build:
       commands:
         - echo Starting mongodb
-        - sudo -i systemctl start mongod
-        - sudo -i systemctl enable mongod
+        - systemctl start mongod
+        - systemctl enable mongod
 
       
