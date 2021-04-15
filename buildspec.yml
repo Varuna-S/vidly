@@ -4,6 +4,8 @@ phases:
     install:
       commands:
         - echo Installing dependencies
+        - yum update  -y
+        - nano /etc/yum.repos.d/mongodb-org-4.4.repo
         - yum install -y mongodb-org
         - yum -y install nodejs
         - npm install
