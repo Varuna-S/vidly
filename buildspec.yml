@@ -4,9 +4,9 @@ phases:
     install:
       commands:
         - echo Installing dependencies
-        - sudo apt update
-        - sudo apt install nodejs npm
-        - sudo apt install mongodb
+        - apt update
+        - apt install nodejs npm
+        - apt install mongodb
     pre_build:
       commands:
         - echo Starting mongodb
