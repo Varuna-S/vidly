@@ -4,7 +4,7 @@ phases:
     install:
       commands:
         - echo Installing dependencies
-        - sudo yum install -y mongodb-org
+        - yum install -y mongodb-org
         - yum -y install nodejs
         - npm install
     pre_build:
